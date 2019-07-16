@@ -12,7 +12,7 @@ loaderVersion="[${forge_version},)"
 [[dependencies.consolehud]]
     modId="forge"
     mandatory=true
-    versionRange="[${forge_version},)"
+    versionRange="[27.0.53,)"
     ordering="NONE"
     side="BOTH"
 
