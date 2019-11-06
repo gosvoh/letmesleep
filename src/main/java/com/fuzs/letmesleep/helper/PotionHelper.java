@@ -1,6 +1,5 @@
 package com.fuzs.letmesleep.helper;
 
-import net.minecraft.block.IWaterLoggable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.potion.EffectInstance;
 

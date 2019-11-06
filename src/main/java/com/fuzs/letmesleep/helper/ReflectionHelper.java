@@ -1,15 +1,12 @@
 package com.fuzs.letmesleep.helper;
 
 import com.fuzs.letmesleep.LetMeSleep;
-import net.minecraft.block.BedBlock;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameRules;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
@@ -23,7 +20,6 @@ public class ReflectionHelper {
     private static final String LIVINGENTITY_ONFINISHEDPOTIONEFFECT = "func_70688_c";
     private static final String BOOLEANVALUE_CREATE = "func_223568_b";
     private static final String SERVERWORLD_ALLPLAYERSSLEEPING = "field_73068_P";
-    private static final String BEDBLOCK_FUNC_220175_A = "func_220175_a";
 
     public static void resetSleepTimer(PlayerEntity instance) {
 
@@ -117,22 +113,6 @@ public class ReflectionHelper {
         }
 
         return false;
-
-    }
-
-    public static Method getValidatePosition() {
-
-        try {
-
-            return ObfuscationReflectionHelper.findMethod(BedBlock.class, BEDBLOCK_FUNC_220175_A, EntityType.class, IWorldReader.class, BlockPos.class);
-
-        } catch (Exception e) {
-
-            LetMeSleep.LOGGER.error("getSafeSpawnPosition() failed", e);
-
-        }
-
-        return null;
 
     }
 

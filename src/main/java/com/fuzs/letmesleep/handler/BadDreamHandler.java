@@ -9,7 +9,6 @@ import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.Direction;
 import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -17,10 +16,7 @@ import net.minecraftforge.common.DungeonHooks;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Optional;
 
 public class BadDreamHandler {
 
@@ -57,11 +53,9 @@ public class BadDreamHandler {
 
     }
 
-    @SuppressWarnings("unchecked")
     private boolean performSleepSpawning(World world, List<? extends PlayerEntity> playerlist, int difficulty) {
 
         boolean flag = false;
-        Method getValidatePosition = ReflectionHelper.getValidatePosition();
 
         for (PlayerEntity player : playerlist) {
 
@@ -75,8 +69,6 @@ public class BadDreamHandler {
 
             while (i < difficulty * 10 && !flag1) {
 
-                System.out.println("Performing attempt " + i);
-
                 Direction direction = world.getBlockState(bedPos).get(HorizontalBlock.HORIZONTAL_FACING).getOpposite();
                 double d1 = world.getRandom().nextDouble() - world.getRandom().nextDouble();
                 double d2 = world.getRandom().nextDouble() - world.getRandom().nextDouble();
@@ -86,25 +78,10 @@ public class BadDreamHandler {
                 double zCoord = (double) bedPos.getZ() + d2 * (2.0 + (Math.signum(d2) == Math.signum(direction.getZOffset()) ? Math.abs(direction.getZOffset()) : 0)) + 0.5;
 
                 EntityType<?> entitytype = DungeonHooks.getRandomDungeonMob(world.getRandom());
-                Optional<Vec3d> spawnPos = Optional.empty();
-
                 boolean collisionCheck = world.areCollisionShapesEmpty(entitytype.func_220328_a(xCoord, yCoord, zCoord));
                 boolean requirementsCheck = EntitySpawnPlacementRegistry.func_223515_a(entitytype, world.getWorld(), SpawnReason.EVENT, new BlockPos(xCoord, yCoord, zCoord), world.getRandom());
 
-//                try {
-//
-//                    if (getValidatePosition != null) {
-//                        spawnPos = (Optional<Vec3d>) getValidatePosition.invoke(null, entitytype, world, new BlockPos(xCoord, yCoord, zCoord));
-//                    }
-//
-//                } catch (IllegalAccessException | InvocationTargetException e) {
-//
-//                    e.printStackTrace();
-//
-//                }
-
                 if (collisionCheck && requirementsCheck) {
-//                if (spawnPos.isPresent() && world.getLight(new BlockPos(spawnPos.get())) < 8) {
 
                     Entity entity = entitytype.create(world);
 

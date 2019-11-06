@@ -117,7 +117,9 @@ public class SleepAttemptHandler {
             long time = player.world.getDayTime() % 24000L;
             long start = ConfigBuildHandler.SLEEP_CONFIG.bedtimeStart.get();
             long end = ConfigBuildHandler.SLEEP_CONFIG.bedtimeEnd.get();
-            if (start <= time && time <= end) {
+            boolean flag = end < start ? start <= time || time <= end : start <= time && time <= end;
+
+            if (flag) {
                 evt.setResult(Event.Result.ALLOW);
             } else {
                 evt.setResult(Event.Result.DENY);
