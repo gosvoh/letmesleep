@@ -2,4 +2,4 @@
 
 A Minecraft mod. Downloads can be found on CurseForge.
 
-![LetMeSleep](https://i.imgur.com/spG9Bel.png)
+![LetMeSleep](https://i.imgur.com/HWzSMac.png)

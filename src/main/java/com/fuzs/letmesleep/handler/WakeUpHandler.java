@@ -8,7 +8,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -101,7 +100,7 @@ public class WakeUpHandler {
 
             String error = "Potion effect to be applied on waking up has been specified incorrectly!";
             String[] values = s.split(",");
-            Optional<Effect> effect = Optional.empty();
+            Optional<Effect> effectOptional = Optional.empty();
             int duration = 0;
             int amplifier = 0;
             boolean showParticles = false;
@@ -112,7 +111,7 @@ public class WakeUpHandler {
 
                 if (name.length > 1) {
                     ResourceLocation location = new ResourceLocation(name[0], name[1]);
-                    effect = Optional.ofNullable(ForgeRegistries.POTIONS.getValue(location));
+                    effectOptional = Optional.ofNullable(ForgeRegistries.POTIONS.getValue(location));
                 } else {
                     LetMeSleep.LOGGER.error(error);
                 }
@@ -141,8 +140,12 @@ public class WakeUpHandler {
                 showParticles = !Boolean.parseBoolean(values[3]);
             }
 
-            EffectInstance effect2 = new EffectInstance(effect.orElse(Effects.SPEED), duration, amplifier, false, showParticles);
-            player.addPotionEffect(effect2);
+            if (effectOptional.isPresent()) {
+
+                EffectInstance effect = new EffectInstance(effectOptional.get(), duration, amplifier, false, showParticles);
+                player.addPotionEffect(effect);
+
+            }
 
         }
 

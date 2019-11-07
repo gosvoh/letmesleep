@@ -14,22 +14,22 @@ import java.lang.reflect.Method;
 
 public class ReflectionHelper {
 
-    private static final String PLAYERENTITY_SLEEPTIMER = "field_71076_b";
-    private static final String PLAYERENTITY_BEDINRANGE = "func_190774_a";
+    private static final String PLAYERENTITY_SLEEP_TIMER = "field_71076_b";
+    private static final String PLAYERENTITY_BED_IN_RANGE = "func_190774_a";
     private static final String PLAYERENTITY_FUNC_213828_B = "func_213828_b";
-    private static final String LIVINGENTITY_ONFINISHEDPOTIONEFFECT = "func_70688_c";
+    private static final String LIVINGENTITY_ON_FINISHED_POTION_EFFECT = "func_70688_c";
     private static final String BOOLEANVALUE_CREATE = "func_223568_b";
-    private static final String SERVERWORLD_ALLPLAYERSSLEEPING = "field_73068_P";
+    private static final String SERVERWORLD_ALL_PLAYERS_SLEEPING = "field_73068_P";
 
-    public static void resetSleepTimer(PlayerEntity instance) {
+    public static void setSleepTimer(PlayerEntity instance, int i) {
 
         try {
 
-            ObfuscationReflectionHelper.setPrivateValue(PlayerEntity.class, instance, 0, PLAYERENTITY_SLEEPTIMER);
+            ObfuscationReflectionHelper.setPrivateValue(PlayerEntity.class, instance, i, PLAYERENTITY_SLEEP_TIMER);
 
         } catch (Exception e) {
 
-            LetMeSleep.LOGGER.error("resetSleepTimer() failed", e);
+            LetMeSleep.LOGGER.error("setSleepTimer() failed", e);
 
         }
 
@@ -39,7 +39,7 @@ public class ReflectionHelper {
 
         try {
 
-            return ObfuscationReflectionHelper.findMethod(PlayerEntity.class, PLAYERENTITY_BEDINRANGE, BlockPos.class, Direction.class);
+            return ObfuscationReflectionHelper.findMethod(PlayerEntity.class, PLAYERENTITY_BED_IN_RANGE, BlockPos.class, Direction.class);
 
         } catch (Exception e) {
 
@@ -72,7 +72,7 @@ public class ReflectionHelper {
 
         try {
 
-            return ObfuscationReflectionHelper.findMethod(LivingEntity.class, LIVINGENTITY_ONFINISHEDPOTIONEFFECT, EffectInstance.class);
+            return ObfuscationReflectionHelper.findMethod(LivingEntity.class, LIVINGENTITY_ON_FINISHED_POTION_EFFECT, EffectInstance.class);
 
         } catch (Exception e) {
 
@@ -104,7 +104,7 @@ public class ReflectionHelper {
 
         try {
 
-            return ObfuscationReflectionHelper.getPrivateValue(ServerWorld.class, instance, SERVERWORLD_ALLPLAYERSSLEEPING);
+            return ObfuscationReflectionHelper.getPrivateValue(ServerWorld.class, instance, SERVERWORLD_ALL_PLAYERS_SLEEPING);
 
         } catch (Exception e) {
 

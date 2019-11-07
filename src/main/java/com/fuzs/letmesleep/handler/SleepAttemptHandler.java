@@ -90,10 +90,8 @@ public class SleepAttemptHandler {
 
         }
 
-        // stop vanilla from executing
-        evt.setResult(PlayerEntity.SleepResult.OTHER_PROBLEM);
         player.startSleeping(at);
-        ReflectionHelper.resetSleepTimer(player);
+        ReflectionHelper.setSleepTimer(player, 0);
 
         if (player.world instanceof ServerWorld) {
             ((ServerWorld) player.world).updateAllPlayersSleepingFlag();
@@ -105,6 +103,9 @@ public class SleepAttemptHandler {
             CriteriaTriggers.SLEPT_IN_BED.trigger((ServerPlayerEntity) player);
         }
 
+        // stop vanilla from executing
+        evt.setResult(PlayerEntity.SleepResult.OTHER_PROBLEM);
+
     }
 
     @SuppressWarnings("unused")
@@ -112,6 +113,7 @@ public class SleepAttemptHandler {
     public void onSleepingTimeCheck(SleepingTimeCheckEvent evt) {
 
         PlayerEntity player = evt.getPlayer();
+
         if (!player.world.isRemote) {
 
             long time = player.world.getDayTime() % 24000L;
@@ -119,11 +121,7 @@ public class SleepAttemptHandler {
             long end = ConfigBuildHandler.SLEEP_CONFIG.bedtimeEnd.get();
             boolean flag = end < start ? start <= time || time <= end : start <= time && time <= end;
 
-            if (flag) {
-                evt.setResult(Event.Result.ALLOW);
-            } else {
-                evt.setResult(Event.Result.DENY);
-            }
+            evt.setResult(flag ? Event.Result.ALLOW : Event.Result.DENY);
 
         }
 
@@ -132,13 +130,12 @@ public class SleepAttemptHandler {
     private boolean bedInRange(PlayerEntity player, BlockPos pos, Direction direction) {
 
         Method bedInRange = ReflectionHelper.getBedInRange();
+
         if (bedInRange != null) {
 
             try {
 
-                if (!((Boolean) bedInRange.invoke(player, pos, direction))) {
-                    return false;
-                }
+                return (boolean) bedInRange.invoke(player, pos, direction);
 
             } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
@@ -153,13 +150,12 @@ public class SleepAttemptHandler {
     private boolean bedObstructed(PlayerEntity player, BlockPos pos, Direction direction) {
 
         Method bedObstructed = ReflectionHelper.getBedObstructed();
+
         if (bedObstructed != null) {
 
             try {
 
-                if ((Boolean) bedObstructed.invoke(player, pos, direction)) {
-                    return true;
-                }
+                return (boolean) bedObstructed.invoke(player, pos, direction);
 
             } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();

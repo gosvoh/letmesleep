@@ -19,7 +19,8 @@ public class ConfigBuildHandler {
 
         public final ForgeConfigSpec.BooleanValue setSpawnAlways;
         public final ForgeConfigSpec.BooleanValue setSpawnOnWakeUp;
-        public final ForgeConfigSpec.BooleanValue spawnMonsters;
+        public final ForgeConfigSpec.BooleanValue spawnMonster;
+        public final ForgeConfigSpec.IntValue spawnMonsterChance;
         public final ForgeConfigSpec.BooleanValue doInsomnia;
 
         private GeneralConfig(String name) {
@@ -28,7 +29,8 @@ public class ConfigBuildHandler {
 
             this.setSpawnAlways = ConfigBuildHandler.BUILDER.comment("Set player spawn point when attempting to sleep in a bed, even when not successful, e. g. before bedtime.").define("Always Set Spawn", true);
             this.setSpawnOnWakeUp = ConfigBuildHandler.BUILDER.comment("Should the player spawn point be set after sleeping in a bed. Disabling this and \"Always Set Spawn\" will prevent beds from setting the player spawn point.").define("Set Spawn On Wake Up", true);
-            this.spawnMonsters = ConfigBuildHandler.BUILDER.comment("Spawn monsters and wake the player when sleeping in an insufficiently lit area.").define("Spawn Monsters", true);
+            this.spawnMonster = ConfigBuildHandler.BUILDER.comment("Spawn monster and wake player when sleeping in an insufficiently lit area.").define("Spawn Monster", true);
+            this.spawnMonsterChance = ConfigBuildHandler.BUILDER.comment("Chance to spawn a monster, higher numbers make it more likely to happen.").defineInRange("Spawn Monster Chance", 10, 0, Integer.MAX_VALUE);
             this.doInsomnia = ConfigBuildHandler.BUILDER.comment("Add a game rule \"doInsomnia\" to disable phantom spawning during the night.").define("doInsomnia Game Rule", true);
 
             BUILDER.pop();

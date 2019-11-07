@@ -24,7 +24,7 @@ public class BadDreamHandler {
     @SubscribeEvent
     public void onWorldTick(TickEvent.WorldTickEvent evt) {
 
-        if (!ConfigBuildHandler.GENERAL_CONFIG.spawnMonsters.get() || evt.phase != TickEvent.Phase.START || evt.world.isRemote) {
+        if (evt.phase != TickEvent.Phase.START || evt.world.isRemote) {
             return;
         }
 
@@ -32,7 +32,7 @@ public class BadDreamHandler {
 
         if (ReflectionHelper.getAllPlayersSleeping(world) && world.getPlayers().stream().noneMatch(player -> !player.isSpectator() && !player.isPlayerFullyAsleep())) {
 
-            if (!ConfigBuildHandler.GENERAL_CONFIG.spawnMonsters.get() || !this.performSleepSpawning(world, world.getPlayers(), world.getDifficulty().getId())) {
+            if (!ConfigBuildHandler.GENERAL_CONFIG.spawnMonster.get() || !this.performSleepSpawning(world, world.getPlayers(), world.getDifficulty().getId())) {
 
                 if (world.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)) {
                     long dayTime = world.getDayTime() + 24000L;
@@ -67,7 +67,7 @@ public class BadDreamHandler {
             boolean flag1 = false;
             BlockPos bedPos = player.getBedPosition().get();
 
-            while (i < difficulty * 10 && !flag1) {
+            while (i < difficulty * ConfigBuildHandler.GENERAL_CONFIG.spawnMonsterChance.get() && !flag1) {
 
                 Direction direction = world.getBlockState(bedPos).get(HorizontalBlock.HORIZONTAL_FACING).getOpposite();
                 double d1 = world.getRandom().nextDouble() - world.getRandom().nextDouble();
@@ -79,7 +79,7 @@ public class BadDreamHandler {
 
                 EntityType<?> entitytype = DungeonHooks.getRandomDungeonMob(world.getRandom());
                 boolean collisionCheck = world.areCollisionShapesEmpty(entitytype.func_220328_a(xCoord, yCoord, zCoord));
-                boolean requirementsCheck = EntitySpawnPlacementRegistry.func_223515_a(entitytype, world.getWorld(), SpawnReason.EVENT, new BlockPos(xCoord, yCoord, zCoord), world.getRandom());
+                boolean requirementsCheck = EntitySpawnPlacementRegistry.func_223515_a(entitytype, world, SpawnReason.EVENT, new BlockPos(xCoord, yCoord, zCoord), world.getRandom());
 
                 if (collisionCheck && requirementsCheck) {
 
@@ -87,24 +87,29 @@ public class BadDreamHandler {
 
                     if (entity instanceof MobEntity) {
 
-                        MobEntity monster = (MobEntity) entity;
-                        monster.onGround = true; // required for navigator to be able to find a path
-                        monster.setLocationAndAngles(xCoord, yCoord, zCoord, world.getRandom().nextFloat() * 360.0F, 0.0F);
-                        Path path = monster.getNavigator().getPathToEntityLiving(player, 0);
+                        MobEntity mob = (MobEntity) entity;
+                        mob.setLocationAndAngles(xCoord, yCoord, zCoord, world.getRandom().nextFloat() * 360.0F, 0.0F);
 
-                        if (path != null && path.getCurrentPathLength() > 1) {
+                        if (!world.containsAnyLiquid(mob.getBoundingBox())) {
 
-                            PathPoint pathpoint = path.getFinalPathPoint();
+                            mob.onGround = true; // required for navigator to be able to find a path
+                            Path path = mob.getNavigator().getPathToEntityLiving(player, 0);
 
-                            if (pathpoint != null && world.isPlayerWithin(pathpoint.x, pathpoint.y, pathpoint.z, 1.5)) {
+                            if (path != null && path.getCurrentPathLength() > 1) {
 
-                                monster.onInitialSpawn(world, world.getDifficultyForLocation(new BlockPos(entity)), SpawnReason.EVENT, null, null);
-                                monster.setAttackTarget(player);
-                                monster.playAmbientSound();
-                                this.addEntityPassengers(world, entity);
+                                PathPoint pathpoint = path.getFinalPathPoint();
 
-                                player.wakeUpPlayer(true, false, false);
-                                flag = flag1 = true;
+                                if (pathpoint != null && world.isPlayerWithin(pathpoint.x, pathpoint.y, pathpoint.z, 1.5)) {
+
+                                    mob.onInitialSpawn(world, world.getDifficultyForLocation(new BlockPos(entity)), SpawnReason.EVENT, null, null);
+                                    mob.setAttackTarget(player);
+                                    mob.playAmbientSound();
+                                    this.addEntityPassengers(world, entity);
+
+                                    player.wakeUpPlayer(true, false, false);
+                                    flag = flag1 = true;
+
+                                }
 
                             }
 
