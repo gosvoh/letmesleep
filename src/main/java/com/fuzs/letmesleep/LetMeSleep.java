@@ -10,8 +10,6 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.LogManager;
@@ -35,7 +33,7 @@ public class LetMeSleep {
     public static final String VERSION = "@VERSION@";
     public static final String RANGE = "[1.12.2]";
     public static final String REMOTE = "*";
-    public static final String DEPENDENCIES = "required-after:forge@[14.23.5.2768,)";
+    public static final String DEPENDENCIES = "required-after:forge@[14.23.5.2779,)";
     public static final String FINGERPRINT = "@FINGERPRINT@";
 
     public static final Logger LOGGER = LogManager.getLogger(LetMeSleep.NAME);

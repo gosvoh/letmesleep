@@ -69,8 +69,6 @@ public class BadDreamHandler {
 
             while (i < difficulty * ConfigBuildHandler.generalConfig.spawnMonsterChance && !flag1) {
 
-                System.out.println("Attempt " + i);
-
                 EnumFacing direction = world.getBlockState(bedPos).getValue(BlockHorizontal.FACING).getOpposite();
                 double d1 = world.rand.nextDouble() - world.rand.nextDouble();
                 double d2 = world.rand.nextDouble() - world.rand.nextDouble();
