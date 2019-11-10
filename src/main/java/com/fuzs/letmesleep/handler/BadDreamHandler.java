@@ -36,7 +36,7 @@ public class BadDreamHandler {
 
                 if (world.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)) {
                     long dayTime = world.getDayTime() + 24000L;
-                    long wakeUpTime = ConfigBuildHandler.WAKE_UP_CONFIG.wakeUpTime.get();
+                    long wakeUpTime = ConfigBuildHandler.SLEEP_TIMINGS_CONFIG.wakeUpTime.get();
                     world.setDayTime(dayTime - (24000L - wakeUpTime + dayTime) % 24000L);
                 }
 

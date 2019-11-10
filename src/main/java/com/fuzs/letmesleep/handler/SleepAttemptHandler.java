@@ -1,6 +1,9 @@
 package com.fuzs.letmesleep.handler;
 
 import com.fuzs.letmesleep.helper.ReflectionHelper;
+import com.fuzs.letmesleep.helper.SetSpawnHelper;
+import com.fuzs.letmesleep.helper.TimeFormatHelper;
+import com.fuzs.letmesleep.util.SetSpawnPoint;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.entity.monster.MonsterEntity;
@@ -12,11 +15,10 @@ import net.minecraft.stats.Stats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
-import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.lang.reflect.InvocationTargetException;
@@ -32,12 +34,21 @@ public class SleepAttemptHandler {
         PlayerEntity player = evt.getPlayer();
         World world = player.world;
         BlockPos at = evt.getPos();
+        BlockPos spawn = player.getBedLocation(player.dimension);
         Direction direction = world.getBlockState(at).get(HorizontalBlock.HORIZONTAL_FACING);
 
         if (!world.isRemote) {
 
-            if (ConfigBuildHandler.GENERAL_CONFIG.setSpawnAlways.get()) {
+            if (SetSpawnHelper.isNewSpawnAllowed(world, player, at, SetSpawnPoint.INTERACT) && !player.isSneaking()) {
+
                 player.setSpawnPoint(at, false, player.dimension);
+                evt.setResult(PlayerEntity.SleepResult.OTHER_PROBLEM);
+                return;
+
+            } else if (SetSpawnHelper.isNewSpawnAllowed(world, player, at, SetSpawnPoint.CHAT)) {
+
+                player.sendStatusMessage(SetSpawnHelper.createRespawnMessage(), false);
+
             }
 
             if (player.isSleeping() || !player.isAlive()) {
@@ -51,7 +62,8 @@ public class SleepAttemptHandler {
             }
 
             if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingTimeCheck(player, player.getBedPosition())) {
-                evt.setResult(PlayerEntity.SleepResult.NOT_POSSIBLE_NOW);
+                this.sendNotPossibleNowMessage(player);
+                evt.setResult(PlayerEntity.SleepResult.OTHER_PROBLEM);
                 return;
             }
 
@@ -91,7 +103,7 @@ public class SleepAttemptHandler {
         }
 
         player.startSleeping(at);
-        ReflectionHelper.setSleepTimer(player, 0);
+        ReflectionHelper.setSleepTimer(player, ConfigBuildHandler.GENERAL_CONFIG.instantSleeping.get() ? 100 : 0);
 
         if (player.world instanceof ServerWorld) {
             ((ServerWorld) player.world).updateAllPlayersSleepingFlag();
@@ -105,25 +117,6 @@ public class SleepAttemptHandler {
 
         // stop vanilla from executing
         evt.setResult(PlayerEntity.SleepResult.OTHER_PROBLEM);
-
-    }
-
-    @SuppressWarnings("unused")
-    @SubscribeEvent
-    public void onSleepingTimeCheck(SleepingTimeCheckEvent evt) {
-
-        PlayerEntity player = evt.getPlayer();
-
-        if (!player.world.isRemote) {
-
-            long time = player.world.getDayTime() % 24000L;
-            long start = ConfigBuildHandler.SLEEP_CONFIG.bedtimeStart.get();
-            long end = ConfigBuildHandler.SLEEP_CONFIG.bedtimeEnd.get();
-            boolean flag = end < start ? start <= time || time <= end : start <= time && time <= end;
-
-            evt.setResult(flag ? Event.Result.ALLOW : Event.Result.DENY);
-
-        }
 
     }
 
@@ -164,6 +157,41 @@ public class SleepAttemptHandler {
         }
 
         return false;
+
+    }
+
+    private void sendNotPossibleNowMessage(PlayerEntity player) {
+
+        TranslationTextComponent textcomponent;
+        int min = ConfigBuildHandler.SLEEP_TIMINGS_CONFIG.bedtimeStart.get();
+        int max = ConfigBuildHandler.SLEEP_TIMINGS_CONFIG.bedtimeEnd.get();
+        String minTime = TimeFormatHelper.formatTime(min);
+        String maxTime = TimeFormatHelper.formatTime(max);
+        boolean thunder = ConfigBuildHandler.SLEEP_TIMINGS_CONFIG.bedtimeThunder.get();
+        boolean rain = ConfigBuildHandler.SLEEP_TIMINGS_CONFIG.bedtimeRain.get();
+
+        if (thunder) {
+
+            if (rain) {
+
+                textcomponent = new TranslationTextComponent("block.minecraft.bed.no_sleep.bad_weather", minTime, maxTime);
+
+            } else {
+
+                // continue using vanilla message for default settings
+                textcomponent = min == 12541 && max == 23458 ? new TranslationTextComponent("block.minecraft.bed.no_sleep") :
+                        new TranslationTextComponent("block.minecraft.bed.no_sleep.thunder", minTime, maxTime);
+
+            }
+
+        } else {
+
+            textcomponent = rain ? new TranslationTextComponent("block.minecraft.bed.no_sleep.rain", minTime, maxTime) :
+                    new TranslationTextComponent("block.minecraft.bed.no_sleep.wrong_time", minTime, maxTime);
+
+        }
+
+        player.sendStatusMessage(textcomponent, true);
 
     }
 

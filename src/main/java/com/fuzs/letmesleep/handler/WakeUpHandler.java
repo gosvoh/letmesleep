@@ -1,8 +1,9 @@
 package com.fuzs.letmesleep.handler;
 
 import com.fuzs.letmesleep.LetMeSleep;
-import com.fuzs.letmesleep.helper.PotionHelper;
+import com.fuzs.letmesleep.helper.ClearPotionsHelper;
 import com.fuzs.letmesleep.util.ClearPotions;
+import com.fuzs.letmesleep.util.SetSpawnPoint;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -12,6 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -21,25 +23,33 @@ import java.util.Optional;
 
 public class WakeUpHandler {
 
-    @SuppressWarnings("unused, deprecation")
+    @SuppressWarnings({"unused", "deprecation", "ConstantConditions"})
     @SubscribeEvent
     public void onPlayerWake(PlayerWakeUpEvent evt) {
 
         if (!evt.getPlayer().world.isRemote) {
 
             ServerPlayerEntity player = (ServerPlayerEntity) evt.getPlayer();
+            ServerWorld world = (ServerWorld) player.world;
+            BlockPos spawn = player.getBedLocation(player.dimension);
+            boolean flag = !ConfigBuildHandler.GENERAL_CONFIG.setSpawnAlways.get() && spawn != null && PlayerEntity.func_213822_a(world, spawn, false).isPresent();
 
-            if (!ConfigBuildHandler.GENERAL_CONFIG.setSpawnOnWakeUp.get()) {
+            if (ConfigBuildHandler.GENERAL_CONFIG.setSpawn.get() != SetSpawnPoint.VANILLA || flag) {
 
-                player.getBedPosition().filter(player.world::isBlockLoaded).ifPresent((p_213368_1_) -> {
-                    BlockState blockstate = player.world.getBlockState(p_213368_1_);
-                    if (blockstate.isBed(player.world, p_213368_1_, player)) {
-                        blockstate.setBedOccupied(player.world, p_213368_1_, player, false);
-                        Vec3d vec3d = blockstate.getBedSpawnPosition(player.getType(), player.world, p_213368_1_, player).orElseGet(()-> {
+                player.getBedPosition().filter(world::isBlockLoaded).ifPresent((p_213368_1_) -> {
+
+                    BlockState blockstate = world.getBlockState(p_213368_1_);
+
+                    if (blockstate.isBed(world, p_213368_1_, player)) {
+
+                        blockstate.setBedOccupied(world, p_213368_1_, player, false);
+                        Vec3d vec3d = blockstate.getBedSpawnPosition(player.getType(), world, p_213368_1_, player).orElseGet(()-> {
                             BlockPos blockpos = p_213368_1_.up();
                             return new Vec3d((double)blockpos.getX() + 0.5D, (double)blockpos.getY() + 0.1D, (double)blockpos.getZ() + 0.5D);
                         });
+
                         player.setPosition(vec3d.x, vec3d.y, vec3d.z);
+
                     }
 
                 });
@@ -72,11 +82,11 @@ public class WakeUpHandler {
 
                 } else if (clearPotions == ClearPotions.POSITIVE) {
 
-                    PotionHelper.clearActivePotions(player, true);
+                    ClearPotionsHelper.clearActivePotions(player, true);
 
                 } else if (clearPotions == ClearPotions.NEGATIVE) {
 
-                    PotionHelper.clearActivePotions(player, false);
+                    ClearPotionsHelper.clearActivePotions(player, false);
 
                 }
 
