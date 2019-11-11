@@ -22,7 +22,7 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent evt) {
 
-        if (ConfigBuildHandler.GENERAL_CONFIG.persistentChat.get() && this.mc.currentScreen instanceof SleepInMultiplayerScreen && evt.getGui() == null) {
+        if (ConfigBuildHandler.WAKE_UP_CONFIG.persistentChat.get() && this.mc.currentScreen instanceof SleepInMultiplayerScreen && evt.getGui() == null) {
 
             TextFieldWidget textfield = ReflectionHelper.getInputField((SleepInMultiplayerScreen) this.mc.currentScreen);
 
@@ -46,7 +46,7 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void onMakeTooltip(ItemTooltipEvent evt) {
 
-        if (ConfigBuildHandler.SLEEP_TIMINGS_CONFIG.timeClock.get() && evt.getItemStack().getItem() instanceof ClockItem) {
+        if (ConfigBuildHandler.SLEEP_TIMINGS_CONFIG.timeClock.get() && this.mc.world != null && evt.getItemStack().getItem() instanceof ClockItem) {
 
             long time = this.mc.world.getDayTime();
             String s = TimeFormatHelper.formatTime(time);

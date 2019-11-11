@@ -1,7 +1,7 @@
 package com.fuzs.letmesleep.network;
 
 import com.fuzs.letmesleep.LetMeSleep;
-import com.fuzs.letmesleep.network.messages.RequestSpawnMessage;
+import com.fuzs.letmesleep.network.message.RequestSpawnMessage;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;

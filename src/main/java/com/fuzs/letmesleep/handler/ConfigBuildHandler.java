@@ -21,8 +21,6 @@ public class ConfigBuildHandler {
 
         public final ForgeConfigSpec.EnumValue<SetSpawnPoint> setSpawn;
         public final ForgeConfigSpec.BooleanValue setSpawnAlways;
-        public final ForgeConfigSpec.BooleanValue persistentChat;
-        public final ForgeConfigSpec.BooleanValue instantSleeping;
         public final ForgeConfigSpec.BooleanValue spawnMonster;
         public final ForgeConfigSpec.IntValue spawnMonsterChance;
         public final ForgeConfigSpec.BooleanValue doInsomnia;
@@ -33,8 +31,6 @@ public class ConfigBuildHandler {
 
             this.setSpawn = ConfigBuildHandler.BUILDER.comment("How beds should be used for setting the respawn point.").defineEnum("Set Respawn Point", SetSpawnPoint.INTERACT);
             this.setSpawnAlways = ConfigBuildHandler.BUILDER.comment("Disable to prevent setting a new respawn point when there is already one present at another bed. The other bed will have to be removed to set a new respawn point.").define("Always Set Spawn", true);
-            this.persistentChat = ConfigBuildHandler.BUILDER.comment("Keep chat open after waking up if it contains any text.").define("Persistent Chat", true);
-            this.instantSleeping = ConfigBuildHandler.BUILDER.comment("Removes the falling asleep animation, so you wake up instantly after going to bed. Some options from \"Set Respawn Point\" will no longer be accessible then.").define("Instant Sleeping", false);
             this.spawnMonster = ConfigBuildHandler.BUILDER.comment("Spawn a monster and wake player when sleeping in an insufficiently lit area.").define("Spawn Monster", true);
             this.spawnMonsterChance = ConfigBuildHandler.BUILDER.comment("Chance to spawn a monster, higher numbers make it more likely to happen.").defineInRange("Spawn Monster Chance", 10, 0, Integer.MAX_VALUE);
             this.doInsomnia = ConfigBuildHandler.BUILDER.comment("Add a game rule \"doInsomnia\" to disable phantom spawning during the night.").define("doInsomnia Game Rule", true);
@@ -53,6 +49,7 @@ public class ConfigBuildHandler {
         public final ForgeConfigSpec.BooleanValue bedtimeRain;
         public final ForgeConfigSpec.BooleanValue timeTwelve;
         public final ForgeConfigSpec.BooleanValue timeClock;
+        public final ForgeConfigSpec.BooleanValue instantSleeping;
         public final ForgeConfigSpec.IntValue wakeUpTime;
 
         private SleepTimingsConfig(String name) {
@@ -65,6 +62,7 @@ public class ConfigBuildHandler {
             this.bedtimeRain = ConfigBuildHandler.BUILDER.comment("Is going to bed when it's raining permitted.").define("Sleep During Rain", false);
             this.timeTwelve = ConfigBuildHandler.BUILDER.comment("Use 12h format for status messages.").define("Time 12h Format", false);
             this.timeClock = ConfigBuildHandler.BUILDER.comment("Add current time to the clock item tooltip.").define("Clock Time Tooltip", true);
+            this.instantSleeping = ConfigBuildHandler.BUILDER.comment("Removes the falling asleep animation, so you wake up instantly after going to bed. Some options from \"Set Respawn Point\" will no longer be accessible then.").define("Instant Sleeping", false);
             this.wakeUpTime = ConfigBuildHandler.BUILDER.comment("Time set after sleeping successfully.").defineInRange("Wake Up Time", 0, 0, 24000);
 
             BUILDER.pop();
@@ -110,6 +108,7 @@ public class ConfigBuildHandler {
         public final ForgeConfigSpec.EnumValue<ClearPotions> clearPotions;
         public final ForgeConfigSpec.BooleanValue effects;
         public final ForgeConfigSpec.ConfigValue<List<String>> potionEffects;
+        public final ForgeConfigSpec.BooleanValue persistentChat;
 
         private WakeUpConfig(String name) {
 
@@ -122,6 +121,7 @@ public class ConfigBuildHandler {
             this.clearPotions = ConfigBuildHandler.BUILDER.comment("Clear potion effects after the player wakes up.").defineEnum("Clear Potions", ClearPotions.BOTH);
             this.effects = ConfigBuildHandler.BUILDER.comment("Should custom potion effects be applied to the player after waking up.").define("Apply Effects", false);
             this.potionEffects = ConfigBuildHandler.BUILDER.comment("Potion effects to be given to the player after waking up. Enter as \"modid:effect,duration,amplifier,hideParticles\", values are based on /effect command. Amplifier and hideParticles are optional.").define("Effects To Apply", Collections.singletonList("minecraft:regeneration,30,0,false"));
+            this.persistentChat = ConfigBuildHandler.BUILDER.comment("Keep chat open after waking up if it contains any text.").define("Persistent Chat", true);
 
             BUILDER.pop();
 

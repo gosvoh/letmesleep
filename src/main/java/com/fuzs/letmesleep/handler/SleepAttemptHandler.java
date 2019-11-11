@@ -19,16 +19,18 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Optional;
 
 public class SleepAttemptHandler {
 
     @SuppressWarnings("unused")
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void onPlayerSleep(PlayerSleepInBedEvent evt) {
 
         PlayerEntity player = evt.getPlayer();
@@ -39,16 +41,18 @@ public class SleepAttemptHandler {
 
         if (!world.isRemote) {
 
+            boolean modified = evt.getResultStatus() != null;
+
             if (SetSpawnHelper.isNewSpawnAllowed(world, player, at, SetSpawnPoint.INTERACT) && !player.isSneaking()) {
-
                 player.setSpawnPoint(at, false, player.dimension);
-                evt.setResult(PlayerEntity.SleepResult.OTHER_PROBLEM);
+                if (!modified) {
+                    evt.setResult(PlayerEntity.SleepResult.OTHER_PROBLEM);
+                }
                 return;
+            }
 
-            } else if (SetSpawnHelper.isNewSpawnAllowed(world, player, at, SetSpawnPoint.CHAT)) {
-
-                player.sendStatusMessage(SetSpawnHelper.createRespawnMessage(), false);
-
+            if (modified) {
+                return;
             }
 
             if (player.isSleeping() || !player.isAlive()) {
@@ -100,10 +104,14 @@ public class SleepAttemptHandler {
 
             }
 
+            if (!ConfigBuildHandler.SLEEP_TIMINGS_CONFIG.instantSleeping.get() && SetSpawnHelper.isNewSpawnAllowed(world, player, at, SetSpawnPoint.CHAT)) {
+                player.sendStatusMessage(SetSpawnHelper.createRespawnMessage(), false);
+            }
+
         }
 
         player.startSleeping(at);
-        ReflectionHelper.setSleepTimer(player, ConfigBuildHandler.GENERAL_CONFIG.instantSleeping.get() ? 100 : 0);
+        ReflectionHelper.setSleepTimer(player, ConfigBuildHandler.SLEEP_TIMINGS_CONFIG.instantSleeping.get() ? 100 : 0);
 
         if (player.world instanceof ServerWorld) {
             ((ServerWorld) player.world).updateAllPlayersSleepingFlag();
@@ -162,7 +170,6 @@ public class SleepAttemptHandler {
 
     private void sendNotPossibleNowMessage(PlayerEntity player) {
 
-        TranslationTextComponent textcomponent;
         int min = ConfigBuildHandler.SLEEP_TIMINGS_CONFIG.bedtimeStart.get();
         int max = ConfigBuildHandler.SLEEP_TIMINGS_CONFIG.bedtimeEnd.get();
         String minTime = TimeFormatHelper.formatTime(min);
@@ -170,28 +177,29 @@ public class SleepAttemptHandler {
         boolean thunder = ConfigBuildHandler.SLEEP_TIMINGS_CONFIG.bedtimeThunder.get();
         boolean rain = ConfigBuildHandler.SLEEP_TIMINGS_CONFIG.bedtimeRain.get();
 
-        if (thunder) {
+        TranslationTextComponent time;
+        Optional<TranslationTextComponent> weather = Optional.empty();
+        TranslationTextComponent message;
 
-            if (rain) {
-
-                textcomponent = new TranslationTextComponent("block.minecraft.bed.no_sleep.bad_weather", minTime, maxTime);
-
-            } else {
-
-                // continue using vanilla message for default settings
-                textcomponent = min == 12541 && max == 23458 ? new TranslationTextComponent("block.minecraft.bed.no_sleep") :
-                        new TranslationTextComponent("block.minecraft.bed.no_sleep.thunder", minTime, maxTime);
-
-            }
-
+        // use adapted vanilla message for default timings
+        if (min == 12541 && max == 23458) {
+            time = new TranslationTextComponent("block.minecraft.bed.no_sleep.night");
         } else {
-
-            textcomponent = rain ? new TranslationTextComponent("block.minecraft.bed.no_sleep.rain", minTime, maxTime) :
-                    new TranslationTextComponent("block.minecraft.bed.no_sleep.wrong_time", minTime, maxTime);
-
+            time = new TranslationTextComponent("block.minecraft.bed.no_sleep.time", minTime, maxTime);
         }
 
-        player.sendStatusMessage(textcomponent, true);
+        if (thunder && rain) {
+            weather = Optional.of(new TranslationTextComponent("block.minecraft.bed.no_sleep.bad_weather"));
+        } else if (thunder) {
+            weather = Optional.of(new TranslationTextComponent("block.minecraft.bed.no_sleep.thunder"));
+        } else if (rain) {
+            weather = Optional.of(new TranslationTextComponent("block.minecraft.bed.no_sleep.rain"));
+        }
+
+        message = weather.map(it -> new TranslationTextComponent("block.minecraft.bed.no_sleep.long_message", time, it))
+                .orElseGet(() -> new TranslationTextComponent("block.minecraft.bed.no_sleep.short_message", time));
+
+        player.sendStatusMessage(message, true);
 
     }
 

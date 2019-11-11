@@ -3,7 +3,7 @@ package com.fuzs.letmesleep.handler;
 import com.fuzs.letmesleep.helper.ReflectionHelper;
 import com.fuzs.letmesleep.helper.SetSpawnHelper;
 import com.fuzs.letmesleep.network.NetworkHandler;
-import com.fuzs.letmesleep.network.messages.RequestSpawnMessage;
+import com.fuzs.letmesleep.network.message.RequestSpawnMessage;
 import com.fuzs.letmesleep.util.SetSpawnPoint;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -34,7 +34,8 @@ public class SetSpawnHandler {
     @SubscribeEvent
     public void onSetSpawn(PlayerSetSpawnEvent evt) {
 
-        if (ConfigBuildHandler.GENERAL_CONFIG.setSpawn.get() == SetSpawnPoint.BUTTON && evt.getPlayer().world.isRemote && evt.getNewSpawn() != null && evt.isForced()) {
+        boolean flag = ConfigBuildHandler.GENERAL_CONFIG.setSpawn.get() == SetSpawnPoint.BUTTON || ConfigBuildHandler.GENERAL_CONFIG.setSpawn.get() == SetSpawnPoint.CHAT;
+        if (flag && evt.getPlayer().world.isRemote && evt.getNewSpawn() != null && evt.isForced()) {
 
             RequestSpawnMessage message = new RequestSpawnMessage(new RequestSpawnMessage.RequestSpawnMessageData(evt.getNewSpawn()));
             NetworkHandler.sendToServer(message);
@@ -75,7 +76,7 @@ public class SetSpawnHandler {
     @SubscribeEvent
     public void onMouseClickedPre(GuiScreenEvent.MouseClickedEvent.Pre evt) {
 
-        if (ConfigBuildHandler.GENERAL_CONFIG.setSpawn.get() == SetSpawnPoint.CHAT && evt.getGui() instanceof ChatScreen) {
+        if (evt.getGui() instanceof ChatScreen) {
 
             if (evt.getButton() == 0) {
 
@@ -126,7 +127,7 @@ public class SetSpawnHandler {
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent evt) {
 
-        if (ConfigBuildHandler.GENERAL_CONFIG.setSpawn.get() == SetSpawnPoint.CHAT && this.mc.currentScreen instanceof SleepInMultiplayerScreen) {
+        if (this.mc.currentScreen instanceof SleepInMultiplayerScreen) {
 
             this.removeSpawnMessage();
 
