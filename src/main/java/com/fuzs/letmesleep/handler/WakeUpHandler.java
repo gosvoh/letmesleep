@@ -1,15 +1,18 @@
 package com.fuzs.letmesleep.handler;
 
 import com.fuzs.letmesleep.LetMeSleep;
-import com.fuzs.letmesleep.helper.PotionHelper;
+import com.fuzs.letmesleep.helper.ClearPotionsHelper;
 import com.fuzs.letmesleep.util.ClearPotions;
+import com.fuzs.letmesleep.util.SetSpawnPoint;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -18,15 +21,18 @@ import java.util.Optional;
 
 public class WakeUpHandler {
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "ConstantConditions"})
     @SubscribeEvent
     public void onPlayerWake(PlayerWakeUpEvent evt) {
 
         if (!evt.getEntityPlayer().world.isRemote) {
 
             EntityPlayerMP player = (EntityPlayerMP) evt.getEntityPlayer();
+            WorldServer world = (WorldServer) player.world;
+            BlockPos spawn = player.getBedLocation(player.dimension);
+            boolean flag = !ConfigBuildHandler.generalConfig.setSpawnAlways && spawn != null && EntityPlayer.getBedSpawnLocation(world, spawn, false) != null;
 
-            if (!ConfigBuildHandler.generalConfig.setSpawnOnWakeUp) {
+            if (ConfigBuildHandler.generalConfig.setSpawn != SetSpawnPoint.VANILLA || flag) {
 
                 IBlockState iblockstate = player.bedLocation == null ? null : player.world.getBlockState(player.bedLocation);
 
@@ -71,11 +77,11 @@ public class WakeUpHandler {
 
                 } else if (clearPotions == ClearPotions.POSITIVE) {
 
-                    PotionHelper.clearActivePotions(player, true);
+                    ClearPotionsHelper.clearActivePotions(player, true);
 
                 } else if (clearPotions == ClearPotions.NEGATIVE) {
 
-                    PotionHelper.clearActivePotions(player, false);
+                    ClearPotionsHelper.clearActivePotions(player, false);
 
                 }
 
