@@ -20,7 +20,6 @@ import org.apache.logging.log4j.Logger;
         name = LetMeSleep.NAME,
         version = LetMeSleep.VERSION,
         acceptedMinecraftVersions = LetMeSleep.RANGE,
-        acceptableRemoteVersions = LetMeSleep.REMOTE,
         dependencies = LetMeSleep.DEPENDENCIES,
         certificateFingerprint = LetMeSleep.FINGERPRINT
 )
@@ -32,7 +31,6 @@ public class LetMeSleep {
     public static final String NAME = "Let Me Sleep";
     public static final String VERSION = "@VERSION@";
     public static final String RANGE = "[1.12.2]";
-    public static final String REMOTE = "*";
     public static final String DEPENDENCIES = "required-after:forge@[14.23.5.2779,)";
     public static final String CLIENT_PROXY_CLASS = "com.fuzs.letmesleep.proxy.ClientProxy";
     public static final String SERVER_PROXY_CLASS = "com.fuzs.letmesleep.proxy.ServerProxy";
