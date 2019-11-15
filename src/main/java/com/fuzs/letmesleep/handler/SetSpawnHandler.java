@@ -44,7 +44,7 @@ public class SetSpawnHandler {
     @SubscribeEvent
     public void onInitGuiPost(GuiScreenEvent.InitGuiEvent.Post evt) {
 
-        if (evt.getGui() instanceof GuiSleepMP) {
+        if (evt.getGui() instanceof GuiSleepMP && this.mc.player != null) {
 
             EntityPlayerSP player = this.mc.player;
             BlockPos pos = player.bedLocation;
@@ -66,14 +66,18 @@ public class SetSpawnHandler {
     @SubscribeEvent
     public void onActionPerformed(GuiScreenEvent.ActionPerformedEvent.Post evt) {
 
-        EntityPlayerSP player = this.mc.player;
-        BlockPos pos = player.bedLocation;
+        if (evt.getGui() instanceof GuiSleepMP && this.mc.player != null) {
 
-        if (evt.getButton().id == 5 && pos != null) {
+            EntityPlayerSP player = this.mc.player;
+            BlockPos pos = player.bedLocation;
 
-            evt.getButton().visible = false;
-            MessageRequestSpawn message = new MessageRequestSpawn(pos);
-            NetworkHandler.sendToServer(message);
+            if (evt.getButton().id == 5 && pos != null) {
+
+                evt.getButton().visible = false;
+                MessageRequestSpawn message = new MessageRequestSpawn(pos);
+                NetworkHandler.sendToServer(message);
+
+            }
 
         }
 
