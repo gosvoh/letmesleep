@@ -124,6 +124,20 @@ public class ReflectionHelper {
 
     }
 
+    public static void setAllPlayersSleeping(ServerWorld instance, boolean flag) {
+
+        try {
+
+            ObfuscationReflectionHelper.setPrivateValue(ServerWorld.class, instance, flag, SERVERWORLD_ALL_PLAYERS_SLEEPING);
+
+        } catch (Exception e) {
+
+            LetMeSleep.LOGGER.error("setAllPlayersSleeping() failed", e);
+
+        }
+
+    }
+
     public static TextFieldWidget getInputField(ChatScreen instance) {
 
         try {

@@ -40,6 +40,7 @@ public class BadDreamHandler {
                     world.setDayTime(dayTime - (24000L - wakeUpTime + dayTime) % 24000L);
                 }
 
+                ReflectionHelper.setAllPlayersSleeping(world, false);
                 world.getPlayers().stream().filter(LivingEntity::isSleeping).forEach(player ->
                         player.wakeUpPlayer(false, false, true));
 
