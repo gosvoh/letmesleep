@@ -51,6 +51,7 @@ public class ConfigBuildHandler {
         public final ForgeConfigSpec.BooleanValue timeClock;
         public final ForgeConfigSpec.BooleanValue instantSleeping;
         public final ForgeConfigSpec.IntValue wakeUpTime;
+        public final ForgeConfigSpec.IntValue sleepLimit;
 
         private SleepTimingsConfig(String name) {
 
@@ -64,7 +65,7 @@ public class ConfigBuildHandler {
             this.timeClock = ConfigBuildHandler.BUILDER.comment("Add current time to the clock item tooltip.").define("Clock Time Tooltip", true);
             this.instantSleeping = ConfigBuildHandler.BUILDER.comment("Removes the falling asleep animation, so you wake up instantly after going to bed. Some options from \"Set Respawn Point\" will no longer be accessible then.").define("Instant Sleeping", false);
             this.wakeUpTime = ConfigBuildHandler.BUILDER.comment("Time set after sleeping successfully.").defineInRange("Wake Up Time", 0, 0, 24000);
-
+            this.sleepLimit = ConfigBuildHandler.BUILDER.comment("The maximum length of time a player can sleep before waking up.").defineInRange("Sleep Limit", 24000, 0, 24000);
             BUILDER.pop();
 
         }

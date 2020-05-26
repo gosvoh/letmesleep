@@ -35,9 +35,11 @@ public class BadDreamHandler {
             if (!ConfigBuildHandler.GENERAL_CONFIG.spawnMonster.get() || !this.performSleepSpawning(world, world.getPlayers(), world.getDifficulty().getId())) {
 
                 if (world.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)) {
-                    long dayTime = world.getDayTime() + 24000L;
+                    long dayTime = world.getDayTime();
                     long wakeUpTime = ConfigBuildHandler.SLEEP_TIMINGS_CONFIG.wakeUpTime.get();
-                    world.setDayTime(dayTime - (24000L - wakeUpTime + dayTime) % 24000L);
+                    long sleepLimit = ConfigBuildHandler.SLEEP_TIMINGS_CONFIG.sleepLimit.get();
+                    long sleepDuration = Math.min((wakeUpTime + 24000L - dayTime) % 24000L, sleepLimit);
+                    world.setDayTime((dayTime + sleepDuration) % 24000L);
                 }
 
                 ReflectionHelper.setAllPlayersSleeping(world, false);
