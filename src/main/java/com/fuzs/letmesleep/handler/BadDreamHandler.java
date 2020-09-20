@@ -96,7 +96,7 @@ public class BadDreamHandler {
                         if (!world.containsAnyLiquid(mob.getBoundingBox())) {
 
                             mob.onGround = true; // required for navigator to be able to find a path
-                            Path path = mob.getNavigator().getPathToEntityLiving(player, 0);
+                            Path path = mob.getNavigator().getPathToEntity(player, 0);
 
                             if (path != null && path.getCurrentPathLength() > 1) {
 
@@ -109,7 +109,7 @@ public class BadDreamHandler {
                                     mob.playAmbientSound();
                                     this.addEntityPassengers(world, entity);
 
-                                    player.wakeUpPlayer(true, false, false);
+                                    player.stopSleepInBed(true, false);
                                     flag = flag1 = true;
 
                                 }
