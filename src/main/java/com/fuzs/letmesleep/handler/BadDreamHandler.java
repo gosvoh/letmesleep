@@ -81,7 +81,7 @@ public class BadDreamHandler {
                 double zCoord = (double) bedPos.getZ() + d2 * (2.0 + (Math.signum(d2) == Math.signum(direction.getZOffset()) ? Math.abs(direction.getZOffset()) : 0)) + 0.5;
 
                 EntityType<?> entitytype = DungeonHooks.getRandomDungeonMob(world.getRandom());
-                boolean collisionCheck = world.areCollisionShapesEmpty(entitytype.func_220328_a(xCoord, yCoord, zCoord));
+                boolean collisionCheck = world.hasNoCollisions(entitytype.func_220328_a(xCoord, yCoord, zCoord));
                 boolean requirementsCheck = EntitySpawnPlacementRegistry.func_223515_a(entitytype, world, SpawnReason.EVENT, new BlockPos(xCoord, yCoord, zCoord), world.getRandom());
 
                 if (collisionCheck && requirementsCheck) {
