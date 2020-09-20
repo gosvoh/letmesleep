@@ -20,8 +20,8 @@ public class SetSpawnHelper {
     public static TranslationTextComponent createRespawnMessage() {
 
         ITextComponent itextcomponent = TextComponentUtils.func_240647_a_(new TranslationTextComponent("multiplayer.spawn.confirm"))
-                .applyTextStyle(component -> component.setColor(TextFormatting.GREEN).setClickEvent(new ClickEvent(ClickEvent.Action.CHANGE_PAGE, ""))
-                        .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslationTextComponent("multiplayer.spawn.tooltip"))));
+                .func_240700_a_(component -> component.func_240712_a_(TextFormatting.GREEN).func_240715_a_(new ClickEvent(ClickEvent.Action.CHANGE_PAGE, ""))
+                        .func_240716_a_(new HoverEvent(HoverEvent.Action.field_230550_a_, new TranslationTextComponent("multiplayer.spawn.tooltip"))));
 
         return new TranslationTextComponent("multiplayer.spawn.message", itextcomponent);
 
@@ -34,10 +34,10 @@ public class SetSpawnHelper {
             return false;
         }
 
-        BlockPos spawn = player.getBedLocation(player.dimension);
+        BlockPos spawn = player.getBedPosition().orElse(null);
         boolean flag1 = !bed.equals(spawn);
         boolean flag2 = ConfigBuildHandler.GENERAL_CONFIG.setSpawnAlways.get() || spawn == null
-                || !PlayerEntity.checkBedValidRespawnPosition(world, spawn, false).isPresent();
+                || !PlayerEntity.func_234567_a_(world.getServer().func_241755_D_(), spawn, false, false).isPresent();
 
         return flag1 && flag2;
 

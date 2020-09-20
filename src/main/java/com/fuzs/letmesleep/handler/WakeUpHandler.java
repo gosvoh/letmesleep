@@ -12,7 +12,7 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -31,8 +31,8 @@ public class WakeUpHandler {
 
             ServerPlayerEntity player = (ServerPlayerEntity) evt.getPlayer();
             ServerWorld world = (ServerWorld) player.world;
-            BlockPos spawn = player.getBedLocation(player.dimension);
-            boolean flag = !ConfigBuildHandler.GENERAL_CONFIG.setSpawnAlways.get() && spawn != null && PlayerEntity.checkBedValidRespawnPosition(world, spawn, false).isPresent();
+            BlockPos spawn = player.getBedPosition().orElse(null);
+            boolean flag = !ConfigBuildHandler.GENERAL_CONFIG.setSpawnAlways.get() && spawn != null && PlayerEntity.func_234567_a_(world.getWorldServer(), spawn, false, false).isPresent();
 
             if (ConfigBuildHandler.GENERAL_CONFIG.setSpawn.get() != SetSpawnPoint.VANILLA || flag) {
 
@@ -43,9 +43,9 @@ public class WakeUpHandler {
                     if (blockstate.isBed(world, p_213368_1_, player)) {
 
                         blockstate.setBedOccupied(world, p_213368_1_, player, false);
-                        Vec3d vec3d = blockstate.getBedSpawnPosition(player.getType(), world, p_213368_1_, player).orElseGet(()-> {
+                        Vector3d vec3d = blockstate.getBedSpawnPosition(player.getType(), world, p_213368_1_, player).orElseGet(()-> {
                             BlockPos blockpos = p_213368_1_.up();
-                            return new Vec3d((double)blockpos.getX() + 0.5D, (double)blockpos.getY() + 0.1D, (double)blockpos.getZ() + 0.5D);
+                            return new Vector3d((double)blockpos.getX() + 0.5D, (double)blockpos.getY() + 0.1D, (double)blockpos.getZ() + 0.5D);
                         });
 
                         player.setPosition(vec3d.x, vec3d.y, vec3d.z);
