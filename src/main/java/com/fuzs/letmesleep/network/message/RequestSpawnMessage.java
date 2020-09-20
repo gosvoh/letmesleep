@@ -3,7 +3,7 @@ package com.fuzs.letmesleep.network.message;
 import com.fuzs.letmesleep.helper.SetSpawnHelper;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.SSpawnPositionPacket;
+//import net.minecraft.network.play.server.SSpawnPositionPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -59,15 +59,16 @@ public class RequestSpawnMessage {
                 BlockPos pos = data.getPosition();
 
                 // can actually be null, although the IDE says it won't be, therefor a null check later on
-                BlockPos spawn = player.getBedLocation(player.dimension);
+                BlockPos spawn = player.getBedPosition().isPresent() ? player.getBedPosition().get() : null;
 
-                if (pos.equals(player.world.getSpawnPoint()) && spawn != null) {
+                //if (pos.equals(player.world.getSpawnPoint()) && spawn != null) {
+                if (pos.equals(player.func_241140_K_()) && spawn != null) {
 
                     player.connection.sendPacket(new SSpawnPositionPacket(spawn));
-
+new
                 } else if (pos.equals(player.getBedPosition().orElse(null)) && SetSpawnHelper.isNewSpawnAllowed(player.world, player, pos, null)) {
 
-                    player.setSpawnPoint(pos, false, false, player.dimension);
+                    player.func_241153_a_(player.func_241141_L_(), pos, false, false);
                     player.connection.sendPacket(new SSpawnPositionPacket(pos));
 
                 }
