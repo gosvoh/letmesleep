@@ -65,7 +65,7 @@ public class RequestSpawnMessage {
                 if (pos.equals(player.func_241140_K_()) && spawn != null) {
 
                     player.connection.sendPacket(new SSpawnPositionPacket(spawn));
-new
+
                 } else if (pos.equals(player.getBedPosition().orElse(null)) && SetSpawnHelper.isNewSpawnAllowed(player.world, player, pos, null)) {
 
                     player.func_241153_a_(player.func_241141_L_(), pos, false, false);
