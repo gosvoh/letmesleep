@@ -44,7 +44,7 @@ public class BadDreamHandler {
 
                 ReflectionHelper.setAllPlayersSleeping(world, false);
                 world.getPlayers().stream().filter(LivingEntity::isSleeping).forEach(player ->
-                        player.wakeUpPlayer(false, false, true));
+                        player.stopSleepInBed(false, false));
 
                 if (world.getGameRules().getBoolean(GameRules.DO_WEATHER_CYCLE)) {
                     world.dimension.resetRainAndThunder();
@@ -136,7 +136,7 @@ public class BadDreamHandler {
 
         if (world.addEntity(entity)) {
 
-            for(Entity e : entity.getPassengers()) {
+            for (Entity e : entity.getPassengers()) {
                 this.addEntityPassengers(world, e);
             }
 
