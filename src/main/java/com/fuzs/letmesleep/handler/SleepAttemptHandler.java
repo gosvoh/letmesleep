@@ -44,7 +44,7 @@ public class SleepAttemptHandler {
             boolean modified = evt.getResultStatus() != null;
 
             if (SetSpawnHelper.isNewSpawnAllowed(world, player, at, SetSpawnPoint.INTERACT) && !player.isSneaking()) {
-                player.setSpawnPoint(at, false, player.dimension);
+                player.setSpawnPoint(at, false, false, player.dimension);
                 if (!modified) {
                     evt.setResult(PlayerEntity.SleepResult.OTHER_PROBLEM);
                 }

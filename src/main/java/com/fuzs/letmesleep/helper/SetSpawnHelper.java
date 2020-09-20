@@ -37,7 +37,7 @@ public class SetSpawnHelper {
         BlockPos spawn = player.getBedLocation(player.dimension);
         boolean flag1 = !bed.equals(spawn);
         boolean flag2 = ConfigBuildHandler.GENERAL_CONFIG.setSpawnAlways.get() || spawn == null
-                || !PlayerEntity.func_213822_a(world, spawn, false).isPresent();
+                || !PlayerEntity.checkBedValidRespawnPosition(world, spawn, false).isPresent();
 
         return flag1 && flag2;
 

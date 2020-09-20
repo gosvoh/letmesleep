@@ -67,7 +67,7 @@ public class RequestSpawnMessage {
 
                 } else if (pos.equals(player.getBedPosition().orElse(null)) && SetSpawnHelper.isNewSpawnAllowed(player.world, player, pos, null)) {
 
-                    player.setSpawnPoint(pos, false, player.dimension);
+                    player.setSpawnPoint(pos, false, false, player.dimension);
                     player.connection.sendPacket(new SSpawnPositionPacket(pos));
 
                 }

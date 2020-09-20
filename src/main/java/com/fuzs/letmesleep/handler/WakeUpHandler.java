@@ -32,7 +32,7 @@ public class WakeUpHandler {
             ServerPlayerEntity player = (ServerPlayerEntity) evt.getPlayer();
             ServerWorld world = (ServerWorld) player.world;
             BlockPos spawn = player.getBedLocation(player.dimension);
-            boolean flag = !ConfigBuildHandler.GENERAL_CONFIG.setSpawnAlways.get() && spawn != null && PlayerEntity.func_213822_a(world, spawn, false).isPresent();
+            boolean flag = !ConfigBuildHandler.GENERAL_CONFIG.setSpawnAlways.get() && spawn != null && PlayerEntity.checkBedValidRespawnPosition(world, spawn, false).isPresent();
 
             if (ConfigBuildHandler.GENERAL_CONFIG.setSpawn.get() != SetSpawnPoint.VANILLA || flag) {
 
