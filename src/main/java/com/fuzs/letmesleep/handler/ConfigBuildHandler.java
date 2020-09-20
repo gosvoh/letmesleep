@@ -6,6 +6,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @SuppressWarnings("WeakerAccess")
 public class ConfigBuildHandler {
@@ -121,7 +122,7 @@ public class ConfigBuildHandler {
             this.starveAmount = ConfigBuildHandler.BUILDER.comment("Amount of food to loose when waking up. Set to 0 to completely starve the player. Negative values will feed the player instead.").defineInRange("Food Amount", 3, Integer.MIN_VALUE, Integer.MAX_VALUE);
             this.clearPotions = ConfigBuildHandler.BUILDER.comment("Clear potion effects after the player wakes up.").defineEnum("Clear Potions", ClearPotions.BOTH);
             this.effects = ConfigBuildHandler.BUILDER.comment("Should custom potion effects be applied to the player after waking up.").define("Apply Effects", false);
-            this.potionEffects = ConfigBuildHandler.BUILDER.comment("Potion effects to be given to the player after waking up. Enter as \"modid:effect,duration,amplifier,hideParticles\", values are based on /effect command. Amplifier and hideParticles are optional.").define("Effects To Apply", Collections.singletonList("minecraft:regeneration,30,0,false"));
+            this.potionEffects = ConfigBuildHandler.BUILDER.comment("Potion effects to be given to the player after waking up. Enter as \"modid:effect,duration,amplifier,hideParticles\", values are based on /effect command. Amplifier and hideParticles are optional.").define("Effects To Apply", Collections.singletonList("minecraft:regeneration,30,0,false"), Objects::nonNull);
             this.persistentChat = ConfigBuildHandler.BUILDER.comment("Keep chat open after waking up if it contains any text.").define("Persistent Chat", true);
 
             BUILDER.pop();
