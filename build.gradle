@@ -69,6 +69,8 @@ processResources {
     inputs.property "loader_version", project.ext.loader
     inputs.property "forge_version", project.ext.forge
     inputs.property "mc_version", project.ext.mc
+    inputs.property "mod_updateurl", "${mod_updateurl}"
+    inputs.property "mod_issuesurl", "${mod_issuesurl}"
 
     // replace stuff in mods.toml and pack.mcmeta
     from(sourceSets.main.resources.srcDirs) {
@@ -85,7 +87,9 @@ processResources {
                 'mod_author': project.ext.author,
                 'loader_version': project.ext.loader,
                 'forge_version': project.ext.forge,
-                'mc_version': project.ext.mc
+                'mc_version': project.ext.mc,
+                "mod_updateurl": "${mod_updateurl}",
+                "mod_issuesurl": "${mod_issuesurl}"
 
         )
 

@@ -1,5 +1,7 @@
 modLoader="javafml"
 loaderVersion="[${loader_version},)"
+issueTrackerURL="${mod_issuesurl}"
+license="Public Domain"
 
 [[mods]]
     modId="${mod_id}"
@@ -8,6 +10,7 @@ loaderVersion="[${loader_version},)"
     version="${mod_version}"
     displayURL="${mod_url}"
     authors="${mod_author}"
+    updateJSONURL="${mod_updateurl}"
 
 [[dependencies.letmesleep]]
     modId="forge"
