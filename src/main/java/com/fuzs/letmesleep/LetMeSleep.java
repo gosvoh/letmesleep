@@ -31,7 +31,6 @@ public class LetMeSleep {
     private void onCommonSetup(final FMLCommonSetupEvent evt) {
 
         NetworkHandler.init();
-        InsomniaHandler.registerGamerule();
         MinecraftForge.EVENT_BUS.register(new CommonEventHandler());
         MinecraftForge.EVENT_BUS.register(new SleepAttemptHandler());
         MinecraftForge.EVENT_BUS.register(new WakeUpHandler());
