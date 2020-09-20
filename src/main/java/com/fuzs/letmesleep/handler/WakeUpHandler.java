@@ -58,7 +58,7 @@ public class WakeUpHandler {
 
             }
 
-            if (evt.shouldSetSpawn() && !evt.wakeImmediately() && !evt.updateWorld()) {
+            if (!evt.wakeImmediately() && !evt.updateWorld()) {
 
                 if (ConfigBuildHandler.WAKE_UP_CONFIG.heal.get()) {
 
