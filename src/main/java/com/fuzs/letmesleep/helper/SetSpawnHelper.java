@@ -19,7 +19,7 @@ public class SetSpawnHelper {
 
     public static TranslationTextComponent createRespawnMessage() {
 
-        ITextComponent itextcomponent = TextComponentUtils.wrapInSquareBrackets(new TranslationTextComponent("multiplayer.spawn.confirm"))
+        ITextComponent itextcomponent = TextComponentUtils.func_240647_a_(new TranslationTextComponent("multiplayer.spawn.confirm"))
                 .applyTextStyle(component -> component.setColor(TextFormatting.GREEN).setClickEvent(new ClickEvent(ClickEvent.Action.CHANGE_PAGE, ""))
                         .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslationTextComponent("multiplayer.spawn.tooltip"))));
 
