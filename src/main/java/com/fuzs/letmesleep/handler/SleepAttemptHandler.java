@@ -36,7 +36,7 @@ public class SleepAttemptHandler {
         PlayerEntity player = evt.getPlayer();
         World world = player.world;
         BlockPos at = evt.getPos();
-        BlockPos spawn = player.getBedLocation(player.dimension);
+        BlockPos spawn = player.getBedPosition().orElse(null);
         Direction direction = world.getBlockState(at).get(HorizontalBlock.HORIZONTAL_FACING);
 
         if (!world.isRemote) {
@@ -44,7 +44,7 @@ public class SleepAttemptHandler {
             boolean modified = evt.getResultStatus() != null;
 
             if (SetSpawnHelper.isNewSpawnAllowed(world, player, at, SetSpawnPoint.INTERACT) && !player.isSneaking()) {
-                player.setSpawnPoint(at, false, false, player.dimension);
+                //player.setSpawnPoint(at, false, false, player.dimension); FIXME idk how to fix it
                 if (!modified) {
                     evt.setResult(PlayerEntity.SleepResult.OTHER_PROBLEM);
                 }
@@ -60,7 +60,8 @@ public class SleepAttemptHandler {
                 return;
             }
 
-            if (!world.dimension.isSurfaceWorld()) {
+            //FIXME idk how to fix it too
+            if (!world.func_230315_m_().field_235999_c_()) {
                 evt.setResult(PlayerEntity.SleepResult.NOT_POSSIBLE_HERE);
                 return;
             }
