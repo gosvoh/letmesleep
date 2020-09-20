@@ -4,6 +4,7 @@ import com.fuzs.letmesleep.helper.SetSpawnHelper;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 //import net.minecraft.network.play.server.SSpawnPositionPacket;
+import net.minecraft.network.play.server.SWorldSpawnChangedPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -64,12 +65,12 @@ public class RequestSpawnMessage {
                 //if (pos.equals(player.world.getSpawnPoint()) && spawn != null) {
                 if (pos.equals(player.func_241140_K_()) && spawn != null) {
 
-                    player.connection.sendPacket(new SSpawnPositionPacket(spawn));
+                    player.connection.sendPacket(new SWorldSpawnChangedPacket(spawn));
 
                 } else if (pos.equals(player.getBedPosition().orElse(null)) && SetSpawnHelper.isNewSpawnAllowed(player.world, player, pos, null)) {
 
                     player.func_241153_a_(player.func_241141_L_(), pos, false, false);
-                    player.connection.sendPacket(new SSpawnPositionPacket(pos));
+                    player.connection.sendPacket(new SWorldSpawnChangedPacket(pos));
 
                 }
 
